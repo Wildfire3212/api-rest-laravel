@@ -24,7 +24,7 @@ class UserController extends Controller
                 'email'       => 'required|email|unique:users',
                 'password'    => 'required'
             ]);
-    
+
             if($validate->fails()){
                 $data = array(
                     'status' => 'error',
@@ -35,7 +35,7 @@ class UserController extends Controller
             }else{
 
                 //Cifrar la contraseña
-                
+
                 $pwd = hash('sha256',$params['password']);
 
                 $user = new User();
@@ -52,7 +52,7 @@ class UserController extends Controller
                     'code' => '200',
                     'message' => 'El usuario se ha creado con exito'
                 );
-            }  
+            }
         } else {
             $data = array(
                 'status' => 'error',
@@ -62,14 +62,14 @@ class UserController extends Controller
             );
             return response()->json($data, $data['code']);
         }
-        
+
     return response()->json($data, $data['code']);
     }
 
 
     public function login(Request $request)
     {
-        
+
         $jwtAuth = new \JwtAuth();
 
         //Recibir datos por POST
@@ -95,7 +95,7 @@ class UserController extends Controller
             }else{
 
                 //Cifrar la contraseña
-                
+
                 $pwd = hash('sha256',$params['password']);
 
                 $signup = $jwtAuth->signup($params['email'], $pwd);
@@ -118,7 +118,7 @@ class UserController extends Controller
        return response()->json($signup, 200);
     }
 
-    
+
 
     public function update(Request $request)
     {
@@ -133,7 +133,7 @@ class UserController extends Controller
 
         if ($checkToken && !empty($params)) {
 
-            
+
             //Sacar el usuario autentificado
             $user = $jwtAuth->checkToken($token, true);
 
