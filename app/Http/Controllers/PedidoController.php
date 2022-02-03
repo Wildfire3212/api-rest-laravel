@@ -19,12 +19,12 @@ class PedidoController extends Controller
 
     public function index()
     {
-        $pedidos = Pedido::all()->load('cliente')->chunk(5);
+        $pedidos = Pedido::all()->load('cliente');
 
         return response()->json([
             'code'   => 200,
             'status' => 'success',
-            'pedidos' => $pedidos->all(5),
+            'pedidos' => $pedidos,
         ]);
     }
 
@@ -57,13 +57,13 @@ class PedidoController extends Controller
      */
     public function show($id)
     {
-        $cliente = Pedido::find($id)->load('cliente');
+        $pedido = Pedido::find($id)->load('cliente');
 
-        if (is_object($cliente)) {
+        if (is_object($pedido)) {
             return response()->json([
                 'code' => '200',
                 'status' => 'success',
-                'clientes' => $cliente,
+                'pedido' => $pedido,
             ]);
         }else{
             return response()->json([
