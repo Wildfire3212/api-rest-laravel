@@ -94,6 +94,7 @@ class ClienteController extends Controller
                 'message' => 'La categoria está vacía',
             ]);
         }
+        return response()->json($data, $data['code']);
     }
 
     /**
