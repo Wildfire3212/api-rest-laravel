@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "https://localhost:80"
+            "url": "https://docker-wildfire.herokuapp.com"
         }
     ],
     "paths": {
