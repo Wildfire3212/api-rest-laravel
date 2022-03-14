@@ -7,7 +7,7 @@ use App\Models\Cliente;
 
 /**
  * @OA\Info(title="API Clientes", version="1")
- * @OA\Server(url="https://localhost:80")
+ * @OA\Server(url="https://docker-wildfire.herokuapp.com")
  * @OA\SecurityScheme(
  *     type="apiKey",
  *     name="Authorization",
