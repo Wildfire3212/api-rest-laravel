@@ -7,7 +7,7 @@ use App\Models\Cliente;
 
 /**
  * @OA\Info(title="API Clientes", version="1")
- * @OA\Server(url="http://localhost:8000")
+ * @OA\Server(url="https://localhost:8000")
  * @OA\SecurityScheme(
  *     type="apiKey",
  *     name="Authorization",
