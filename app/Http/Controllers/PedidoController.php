@@ -46,7 +46,55 @@ class PedidoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Recoger los datos por Post
+
+
+
+        $json = $request->input('json',null);
+        $params = json_decode($json, true);
+
+        //Validarlos
+
+        if (!empty($params)) {
+            $validate = \Validator::make($params, [
+                'id_remitente_fk'        => 'required|numeric|exists:cliente,id',
+                'kg'        => 'required|numeric|',
+                'nombre_destinatario'         => 'required',
+                'direccion_destinatario'     => 'required'
+            ]);
+
+            if($validate->fails()){
+                $data = array(
+                    'status' => 'error',
+                    'code' => '400',
+                    'message' => 'Fallo en la validación',
+                    'errors' => $validate->errors()
+                );
+            }else {
+                $pedido = new Pedido();
+                $pedido->id_remitente_fk = $params['id_remitente_fk'];
+                $pedido->nombre_destinatario = $params['nombre_destinatario'];
+                $pedido->direccion_destinatario = $params['kg'];
+                $pedido->kg = $params['kg'];
+                if ($request->filled('comentarios')) {
+                    $pedido->comentarios = $params['comentarios'];
+                }
+                $pedido->timestamps = false;
+                $pedido->save();
+                return response()->json([
+                    'code' => '200',
+                    'status' => 'success',
+                    'message' => 'Pedido creado con éxito'
+                ]);
+            }
+        }else{
+            return response()->json([
+                'code' => '400',
+                'status' => 'error',
+                'message' => 'El pedido está vacío',
+            ]);
+        }
+        return response()->json($data, $data['code']);
     }
 
     /**
