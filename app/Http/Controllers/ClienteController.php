@@ -5,6 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Cliente;
 
+/**
+ * @OA\Info(title="API Clientes", version="1")
+ * @OA\Server(url="http://localhost:8000")
+ * @OA\SecurityScheme(
+ *     type="apiKey",
+ *     name="Authorization",
+ *     in="header",
+ *     securityScheme="Authorization"
+ * )
+ */
+
+
 
 class ClienteController extends Controller
 {
@@ -18,6 +30,21 @@ class ClienteController extends Controller
         $this->middleware('api.auth');
     }
 
+    /**
+    * @OA\Get(
+    *     path="/cliente",
+    *     summary="Mostrar todos los clientes",
+    *     security={ {"Authorization": {}} },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Mostrar todos los clientes."
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
     public function index()
     {
         $clientes = Cliente::all();
@@ -45,6 +72,56 @@ class ClienteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+    /**
+    * @OA\Post(
+    *     path="/cliente",
+    *     summary="Añadir un nuevo cliente",
+    *     security={ {"Authorization": {}} },
+    * @OA\RequestBody(
+    *     required=true,
+    *     @OA\MediaType(
+    *       mediaType="application/x-www-form-urlencoded",
+    *       @OA\Schema(
+    *         type= "object",
+    *         @OA\Property(
+    *           property="json",
+    *           type="object",
+    *           @OA\Property(
+    *               property="nombre",
+    *               type="string"
+    *           ),
+    *           @OA\Property(
+    *               property="email",
+    *               type="string",
+    *               format="email"
+    *           ),
+    *           @OA\Property(
+    *               property="direccion",
+    *               type="string"
+    *           ),
+    *           @OA\Property(
+    *               property="cel",
+    *               type="integer"
+    *           ),
+    *           @OA\Property(
+    *               property="tel",
+    *               type="integer"
+    *           ),
+    *         )
+    *       )
+    *     )
+    *   ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Se añadió el cliente."
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
     public function store(Request $request)
     {
         //Recoger los datos por Post
@@ -65,12 +142,12 @@ class ClienteController extends Controller
             ]);
 
             if($validate->fails()){
-                $data = array(
+                return response()->json([
                     'status' => 'error',
                     'code' => '400',
                     'message' => 'Fallo en la validación',
                     'errors' => $validate->errors()
-                );
+                ]);
             }else {
                 $cliente = new Cliente();
                 $cliente->nombre = $params['nombre'];
@@ -102,6 +179,22 @@ class ClienteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    /**
+    * @OA\get(
+    *     path="/cliente/{id}",
+    *     summary="Obtener registros de un cliente específico y sus pedidos asociados",
+    *     security={ {"Authorization": {}} },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Se obtuvo el cliente con éxito."
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
     public function show($id)
     {
 

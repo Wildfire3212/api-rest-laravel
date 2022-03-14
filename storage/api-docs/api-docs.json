@@ -1,0 +1,114 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Clientes",
+        "version": "1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000"
+        }
+    ],
+    "paths": {
+        "/cliente": {
+            "get": {
+                "summary": "Mostrar todos los clientes",
+                "operationId": "3099d270bded3c49c9e7c9d46c9548c0",
+                "responses": {
+                    "200": {
+                        "description": "Mostrar todos los clientes."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Añadir un nuevo cliente",
+                "operationId": "12b129061b556ebcc74836b104743bb1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "json": {
+                                        "properties": {
+                                            "nombre": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "direccion": {
+                                                "type": "string"
+                                            },
+                                            "cel": {
+                                                "type": "integer"
+                                            },
+                                            "tel": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Se añadió el cliente."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/cliente/{id}": {
+            "get": {
+                "summary": "Obtener registros de un cliente específico y sus pedidos asociados",
+                "operationId": "3c0994e34068ea19ab256f535d29588f",
+                "responses": {
+                    "200": {
+                        "description": "Se obtuvo el cliente con éxito."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "Authorization": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}
