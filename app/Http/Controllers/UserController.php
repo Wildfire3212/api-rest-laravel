@@ -8,6 +8,49 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+
+    /**
+    * @OA\Post(
+    *     path="/api/register",
+    *     summary="Registrarse en la API",
+    *     tags={"login"},
+    * @OA\RequestBody(
+    *     required=true,
+    *     @OA\MediaType(
+    *       mediaType="application/x-www-form-urlencoded",
+    *       @OA\Schema(
+    *         type= "object",
+    *         @OA\Property(
+    *           property="json",
+    *           type="object",
+    *           @OA\Property(
+    *               property="name",
+    *               type="string"
+    *           ),
+    *           @OA\Property(
+    *               property="email",
+    *               type="string",
+    *               format="email"
+    *           ),
+    *           @OA\Property(
+    *               property="password",
+    *               type="string",
+    *               format="password"
+    *           )
+    *         )
+    *       )
+    *     )
+    *   ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Se añadió el cliente."
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
     public function register(Request $request)
     {
         //Recoger los datos del usuario por post
@@ -66,7 +109,44 @@ class UserController extends Controller
     return response()->json($data, $data['code']);
     }
 
-
+        /**
+    * @OA\Post(
+    *     path="/api/login",
+    *     summary="Iniciar Sesion en la API",
+    *     tags={"login"},
+    * @OA\RequestBody(
+    *     required=true,
+    *     @OA\MediaType(
+    *       mediaType="application/x-www-form-urlencoded",
+    *       @OA\Schema(
+    *         type= "object",
+    *         @OA\Property(
+    *           property="json",
+    *           type="object",
+    *           @OA\Property(
+    *               property="email",
+    *               type="string",
+    *               format="email"
+    *           ),
+    *           @OA\Property(
+    *               property="password",
+    *               type="string",
+    *               format="password"
+    *           )
+    *         )
+    *       )
+    *     )
+    *   ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="JWT para Authorization Header."
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
     public function login(Request $request)
     {
 

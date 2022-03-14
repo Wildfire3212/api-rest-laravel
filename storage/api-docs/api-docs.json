@@ -83,6 +83,17 @@
             "get": {
                 "summary": "Obtener registros de un cliente específico y sus pedidos asociados",
                 "operationId": "3c0994e34068ea19ab256f535d29588f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "parametro de id en url",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Se obtuvo el cliente con éxito."
@@ -96,6 +107,249 @@
                         "Authorization": []
                     }
                 ]
+            },
+            "put": {
+                "summary": "Actualizar Cliente existente",
+                "operationId": "ac4703956834a3b9e549189cd5b123eb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "parametro de id en url",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "json": {
+                                        "properties": {
+                                            "nombre": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "direccion": {
+                                                "type": "string"
+                                            },
+                                            "cel": {
+                                                "type": "integer"
+                                            },
+                                            "tel": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Se actualizó el cliente."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/pedidos": {
+            "get": {
+                "summary": "Mostrar todos los pedidos junto a sus clientes asociados",
+                "operationId": "a199173bdc5d7b882c1414cc6d087637",
+                "responses": {
+                    "200": {
+                        "description": "Mostrar todos los pedidos."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            },
+            "post": {
+                "summary": "Añadir un nuevo pedido",
+                "operationId": "975777620150e86f5e219c41f778f7f7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "json": {
+                                        "properties": {
+                                            "id_remitente_fk": {
+                                                "type": "integer"
+                                            },
+                                            "kg": {
+                                                "type": "integer"
+                                            },
+                                            "direccion_destinatario": {
+                                                "type": "string"
+                                            },
+                                            "nombre_destinatario": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pedido creado con éxito"
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/pedidos/{id}": {
+            "get": {
+                "summary": "Obtener registros de un pedido específico y su cliente",
+                "operationId": "274ca0a353877a7a09abdccd797054a0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "parametro de id en url",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Se obtuvo el pedido con éxito."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                },
+                "security": [
+                    {
+                        "Authorization": []
+                    }
+                ]
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "login"
+                ],
+                "summary": "Registrarse en la API",
+                "operationId": "2f25885f3b6f61ca11724ec302d2e439",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "json": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "format": "password"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Se añadió el cliente."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "login"
+                ],
+                "summary": "Iniciar Sesion en la API",
+                "operationId": "0fc9610184083ac6dddab2c63139225a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "json": {
+                                        "properties": {
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email"
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "format": "password"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "JWT para Authorization Header."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
             }
         }
     },

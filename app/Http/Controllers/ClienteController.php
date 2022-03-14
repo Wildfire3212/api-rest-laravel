@@ -157,6 +157,7 @@ class ClienteController extends Controller
                 if ($request->filled('tel')) {
                     $cliente->tel = $params['tel'];
                 }
+                $cliente->timestamps = false;
                 $cliente->save();
                 return response()->json([
                     'code' => '200',
@@ -186,6 +187,13 @@ class ClienteController extends Controller
     *     path="/cliente/{id}",
     *     summary="Obtener registros de un cliente específico y sus pedidos asociados",
     *     security={ {"Authorization": {}} },
+    *     @OA\Parameter(
+    *         description="parametro de id en url",
+    *         in="path",
+    *         name="id",
+    *         required=true,
+    *         @OA\Schema(type="string"),
+    *     ),
     *     @OA\Response(
     *         response=200,
     *         description="Se obtuvo el cliente con éxito."
@@ -198,21 +206,29 @@ class ClienteController extends Controller
     */
     public function show($id)
     {
-
-        $cliente = Cliente::find($id)->load('pedidos');
-
-        if (is_object($cliente)) {
-            return response()->json([
-                'code' => '200',
-                'status' => 'success',
-                'cliente' => $cliente,
-            ]);
-        }else{
+        if (!Cliente::find($id)) {
             return response()->json([
                 'code' => '404',
                 'status' => 'error',
                 'message' => 'El cliente no existe',
             ]);
+        }else{
+
+            $cliente = Cliente::find($id)->load('pedidos');
+
+            if (is_object($cliente)) {
+                return response()->json([
+                    'code' => '200',
+                    'status' => 'success',
+                    'cliente' => $cliente,
+                ]);
+            }else{
+                return response()->json([
+                    'code' => '404',
+                    'status' => 'error',
+                    'message' => 'El cliente no existe',
+                ]);
+            }
         }
     }
 
@@ -234,6 +250,64 @@ class ClienteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+     /**
+    * @OA\Put(
+    *     path="/cliente/{id}",
+    *     summary="Actualizar Cliente existente",
+    *     security={ {"Authorization": {}} },
+    *     @OA\Parameter(
+    *         description="parametro de id en url",
+    *         in="path",
+    *         name="id",
+    *         required=true,
+    *         @OA\Schema(type="string"),
+    *     ),
+    * @OA\RequestBody(
+    *     required=true,
+    *     @OA\MediaType(
+    *       mediaType="application/x-www-form-urlencoded",
+    *       @OA\Schema(
+    *         type= "object",
+    *         @OA\Property(
+    *           property="json",
+    *           type="object",
+    *           @OA\Property(
+    *               property="nombre",
+    *               type="string"
+    *           ),
+    *           @OA\Property(
+    *               property="email",
+    *               type="string",
+    *               format="email"
+    *           ),
+    *           @OA\Property(
+    *               property="direccion",
+    *               type="string"
+    *           ),
+    *           @OA\Property(
+    *               property="cel",
+    *               type="integer"
+    *           ),
+    *           @OA\Property(
+    *               property="tel",
+    *               type="integer"
+    *           ),
+    *         )
+    *       )
+    *     )
+    *   ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Se actualizó el cliente."
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
+
     public function update(Request $request, $id)
     {
         //Recoger los datos por Post
@@ -244,14 +318,23 @@ class ClienteController extends Controller
         //Validarlos
 
         if (!empty($params)) {
-                unset($params['id']);
-                unset($params['created_at']);
-                $cliente = Cliente::where('id',$id)->update($params);
+                $validate = \Validator::make($params, [
+                    'email'         => 'email|unique:cliente',
+                ]);
+                if ($validate->fails()) {
+                    return response()->json([
+                        'code' => '400',
+                        'status' => 'error',
+                        'message' => 'El email ya esta siendo utilizado o no es válido',
+                    ]);
+                }else{
+                $cliente=Cliente::where('id',$id)->update($params);
                 return response()->json([
                     'code' => '200',
                     'status' => 'success',
                     'message' => 'Cliente actualizado con éxito'
                 ]);
+            }
         }else{
             return response()->json([
                 'code' => '400',
