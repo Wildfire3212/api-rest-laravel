@@ -10,6 +10,7 @@ class Cliente extends Model
     use HasFactory;
 
     protected $table = 'cliente';
+    public $timestamps = false;
 
     public function clientes(){
         return $this->hasMany('App\Models\Clientes');

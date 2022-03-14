@@ -17,6 +17,22 @@ class PedidoController extends Controller
         $this->middleware('api.auth');
     }
 
+    /**
+    * @OA\Get(
+    *     path="/pedidos",
+    *     summary="Mostrar todos los pedidos junto a sus clientes asociados",
+    *     security={ {"Authorization": {}} },
+    *     @OA\Response(
+    *         response=200,
+    *         description="Mostrar todos los pedidos."
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
+
     public function index()
     {
         $pedidos = Pedido::all()->load('cliente');
@@ -44,6 +60,51 @@ class PedidoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+        /**
+    * @OA\Post(
+    *     path="/pedidos",
+    *     summary="Añadir un nuevo pedido",
+    *     security={ {"Authorization": {}} },
+    * @OA\RequestBody(
+    *     required=true,
+    *     @OA\MediaType(
+    *       mediaType="application/x-www-form-urlencoded",
+    *       @OA\Schema(
+    *         type= "object",
+    *         @OA\Property(
+    *           property="json",
+    *           type="object",
+    *           @OA\Property(
+    *               property="id_remitente_fk",
+    *               type="integer"
+    *           ),
+    *           @OA\Property(
+    *               property="kg",
+    *               type="integer",
+    *           ),
+    *           @OA\Property(
+    *               property="direccion_destinatario",
+    *               type="string"
+    *           ),
+    *           @OA\Property(
+    *               property="nombre_destinatario",
+    *               type="string"
+    *           ),
+    *         )
+    *       )
+    *     )
+    *   ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Pedido creado con éxito"
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
     public function store(Request $request)
     {
         //Recoger los datos por Post
@@ -74,7 +135,7 @@ class PedidoController extends Controller
                 $pedido = new Pedido();
                 $pedido->id_remitente_fk = $params['id_remitente_fk'];
                 $pedido->nombre_destinatario = $params['nombre_destinatario'];
-                $pedido->direccion_destinatario = $params['kg'];
+                $pedido->direccion_destinatario = $params['direccion_destinatario'];
                 $pedido->kg = $params['kg'];
                 if ($request->filled('comentarios')) {
                     $pedido->comentarios = $params['comentarios'];
@@ -97,29 +158,63 @@ class PedidoController extends Controller
         return response()->json($data, $data['code']);
     }
 
+
+
     /**
      * Display the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+        /**
+    * @OA\get(
+    *     path="/pedidos/{id}",
+    *     summary="Obtener registros de un pedido específico y su cliente",
+    *     security={ {"Authorization": {}} },
+    *     @OA\Parameter(
+    *         description="parametro de id en url",
+    *         in="path",
+    *         name="id",
+    *         required=true,
+    *         @OA\Schema(type="string"),
+    *     ),
+    *     @OA\Response(
+    *         response=200,
+    *         description="Se obtuvo el pedido con éxito."
+    *     ),
+    *     @OA\Response(
+    *         response="default",
+    *         description="Ha ocurrido un error."
+    *     )
+    * )
+    */
     public function show($id)
     {
-        $pedido = Pedido::find($id)->load('cliente');
-
-        if (is_object($pedido)) {
-            return response()->json([
-                'code' => '200',
-                'status' => 'success',
-                'pedido' => $pedido,
-            ]);
-        }else{
+        if (!Pedido::find($id)) {
             return response()->json([
                 'code' => '404',
                 'status' => 'error',
-                'message' => 'La categoria no existe',
+                'message' => 'El pedido no existe',
             ]);
+        }else{
+            $pedido = Pedido::find($id)->load('cliente');
+
+            if (is_object($pedido)) {
+                return response()->json([
+                    'code' => '200',
+                    'status' => 'success',
+                    'pedido' => $pedido,
+                ]);
+            }else{
+                return response()->json([
+                    'code' => '404',
+                    'status' => 'error',
+                    'message' => 'La categoria no existe',
+                ]);
+            }
         }
+
     }
 
     /**
